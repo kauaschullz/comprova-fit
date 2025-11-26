@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -599,9 +601,6 @@
         <div class="choice-list" id="chip-preferencias"></div>
         <p><strong>Restrições</strong></p>
         <div class="choice-list" id="chip-restricoes"></div>
-        <div class="divider"></div>
-        <div class="mini-cards" id="persona-sugestoes"></div>
-        <div class="divider"></div>
         <button id="btn-go-quiz">Continuar e detalhar perfil</button>
       </div>
     </section>
@@ -1215,15 +1214,6 @@
     }
 
     function updatePersonaSuggestions() {
-      const box = document.getElementById('persona-sugestoes');
-      const scored = [...supplements].sort((a, b) => computeScore(b) - computeScore(a)).slice(0, 4);
-      box.innerHTML = scored.map(s => `
-        <div class="mini-card">
-          <strong>${s.name}</strong>
-          <p class="subtitle" style="margin:0;">${s.short}</p>
-          <span class="badge ${reliabilityClass(s.reliability)}">${reliabilityBadge(s.reliability)}</span>
-        </div>
-      `).join('');
       updatePersonalRecos();
     }
 
