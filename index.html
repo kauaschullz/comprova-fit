@@ -1,0 +1,1366 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ComprovaFIT</title>
+  <style>
+    :root {
+      --green: #00b050;
+      --dark: #111;
+      --gray: #666;
+      --light-gray: #f5f5f5;
+      --border: #0f0f0f;
+      --max-width: 430px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      background: linear-gradient(180deg, #f8fff8 0%, #eef7ef 50%, #ffffff 100%);
+      color: var(--dark);
+      display: flex;
+      justify-content: center;
+      padding: 20px 12px 80px;
+    }
+
+    .app-shell {
+      width: 100%;
+      max-width: var(--max-width);
+      background: white;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      border-radius: 24px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+      position: relative;
+      min-height: 100vh;
+    }
+
+    header {
+      padding: 20px 18px 12px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .logo-circle {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: var(--green);
+      display: grid;
+      place-items: center;
+      color: white;
+      font-size: 26px;
+      font-weight: 700;
+      box-shadow: 0 8px 18px rgba(0, 176, 80, 0.35);
+    }
+
+    h1, h2, h3 {
+      color: var(--dark);
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    h2 {
+      font-size: 22px;
+      margin-bottom: 12px;
+    }
+
+    p.subtitle {
+      color: var(--gray);
+      margin-bottom: 20px;
+      line-height: 1.4;
+    }
+
+    .section {
+      display: none;
+      padding: 10px 18px 90px;
+      min-height: 100vh;
+      background: white;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    .section-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .chip {
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: #f7fff9;
+      color: var(--dark);
+      cursor: pointer;
+      font-weight: 600;
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+
+    .chip.active {
+      background: var(--green);
+      color: white;
+      box-shadow: 0 6px 16px rgba(0, 176, 80, 0.25);
+      transform: translateY(-1px);
+    }
+
+    .mini-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+    }
+
+    .mini-card {
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      border-radius: 16px;
+      padding: 12px;
+      background: linear-gradient(145deg, #f8fff8 0%, #ffffff 100%);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .mini-card strong {
+      font-size: 15px;
+    }
+
+    .divider {
+      height: 1px;
+      background: rgba(0, 0, 0, 0.05);
+      margin: 14px 0;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px 14px;
+      font-size: 16px;
+      background: #fff;
+      outline: none;
+      transition: box-shadow 0.2s, transform 0.1s;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      box-shadow: 0 0 0 3px rgba(0, 176, 80, 0.2);
+      transform: translateY(-1px);
+    }
+
+    button {
+      background: var(--green);
+      color: white;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 14px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      width: 100%;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    button:active {
+      transform: translateY(1px) scale(0.995);
+    }
+
+    .btn-secondary {
+      background: white;
+      color: var(--dark);
+    }
+
+    .login-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 4px;
+    }
+
+    .card {
+      background: #fdfdfd;
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      border-radius: 18px;
+      padding: 14px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .pill-btn {
+      background: #0f0f0f;
+      color: white;
+      border-radius: 30px;
+      padding: 8px 14px;
+      font-size: 14px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .search-bar {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 14px;
+      padding: 6px 8px;
+      background: #fdfdfd;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      border-radius: 18px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+    }
+
+    .search-bar input {
+      flex: 1;
+      border-radius: 18px;
+      background: #f8f8f8;
+      border: 1px solid rgba(0, 0, 0, 0.12);
+      min-height: 44px;
+    }
+
+    .search-btn {
+      background: var(--green);
+      color: white;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 14px;
+      display: grid;
+      place-items: center;
+      width: auto;
+      min-width: 44px;
+      box-shadow: 0 8px 18px rgba(0, 176, 80, 0.25);
+      flex-shrink: 0;
+    }
+
+    .select-filter {
+      margin-bottom: 12px;
+    }
+
+    .supplement-item {
+      display: grid;
+      grid-template-columns: 70px 1fr 40px;
+      gap: 12px;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+    }
+
+    .supplement-item:last-child {
+      border-bottom: none;
+    }
+
+    .supplement-item img {
+      width: 70px;
+      height: 70px;
+      object-fit: cover;
+      border-radius: 16px;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    .supplement-info h4 {
+      font-size: 16px;
+      margin-bottom: 6px;
+    }
+
+    .supplement-info p {
+      font-size: 13px;
+      color: var(--gray);
+      line-height: 1.3;
+    }
+
+    .badge {
+      padding: 6px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      text-align: center;
+      border: 1px solid var(--border);
+      background: #f7fff9;
+    }
+
+    .reliability-high { color: #0a8f2f; }
+    .reliability-medium { color: #d0a000; }
+    .reliability-low { color: #c63d2f; }
+
+    .detail-hero img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 20px;
+      margin-bottom: 14px;
+    }
+
+    .detail-hero .title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+
+    .detail-hero h2 {
+      margin: 0;
+    }
+
+    .detail-section {
+      margin-bottom: 16px;
+    }
+
+    .detail-section h3 {
+      font-size: 18px;
+      margin-bottom: 6px;
+    }
+
+    .detail-section ul {
+      list-style: disc;
+      padding-left: 18px;
+      color: var(--gray);
+      line-height: 1.5;
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      background: #f2f2f2;
+      border-radius: 14px;
+      margin-bottom: 12px;
+      padding: 4px;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    .tab-btn {
+      border: none;
+      background: transparent;
+      padding: 10px 0;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .tab-btn.active {
+      background: white;
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+      border: 1px solid var(--border);
+    }
+
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .history-item {
+      display: grid;
+      grid-template-columns: 60px 1fr 40px;
+      gap: 10px;
+      align-items: center;
+      background: #fdfdfd;
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      border-radius: 14px;
+      padding: 10px;
+    }
+
+    .history-item img {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 14px;
+    }
+
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .avatar {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--green), #0ed17a);
+      display: grid;
+      place-items: center;
+      color: white;
+      font-size: 26px;
+      font-weight: 800;
+      border: 2px solid var(--border);
+      box-shadow: 0 10px 24px rgba(0, 176, 80, 0.25);
+    }
+
+    .options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .option {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      border-radius: 14px;
+      cursor: pointer;
+      background: #fafafa;
+    }
+
+    .navbar {
+      position: fixed;
+      bottom: 12px;
+      left: 0;
+      right: 0;
+      display: none;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    .navbar.show {
+      display: flex;
+    }
+
+    .nav-active .section {
+      padding-bottom: 160px;
+    }
+
+    .navbar .inner {
+      width: 100%;
+      max-width: var(--max-width);
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 4px;
+      background: #0f0f0f;
+      color: white;
+      padding: 8px;
+      border-radius: 16px;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.3);
+      pointer-events: auto;
+    }
+
+    .nav-btn {
+      border: none;
+      background: transparent;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 8px 6px;
+      border-radius: 12px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .nav-btn.active {
+      background: rgba(255, 255, 255, 0.14);
+    }
+
+    .nav-icon {
+      font-size: 18px;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.35);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 10;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 18px;
+      padding: 16px;
+      width: 100%;
+      max-width: 360px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    .chat-area {
+      background: #f7f7f7;
+      border-radius: 14px;
+      padding: 12px;
+      margin: 12px 0;
+      min-height: 90px;
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      color: var(--gray);
+      font-size: 14px;
+    }
+
+    .camera-placeholder {
+      background: #f3fff8;
+      border: 1px dashed var(--green);
+      padding: 16px;
+      border-radius: 16px;
+      text-align: center;
+      color: var(--gray);
+    }
+
+    @media (min-width: 900px) {
+      body {
+        background: radial-gradient(circle at 20% 20%, rgba(0, 176, 80, 0.12), transparent 30%),
+          radial-gradient(circle at 80% 10%, rgba(0, 176, 80, 0.1), transparent 26%),
+          #f5f7f5;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Login -->
+    <section id="login" class="section active">
+      <header>
+        <div class="logo">
+          <div class="logo-circle">💪</div>
+          <div>
+            <h1>ComprovaFIT</h1>
+            <p class="subtitle">Compre apenas os suplementos que você precisa</p>
+          </div>
+        </div>
+      </header>
+      <div class="card">
+        <p class="subtitle">Recomendações com base científica e personalizadas para seus objetivos.</p>
+        <div class="input-group">
+          <input id="login-email" type="email" placeholder="Email" />
+          <input id="login-password" type="password" placeholder="Senha" />
+        </div>
+        <div class="login-actions">
+          <button id="btn-login">Entrar</button>
+          <button class="btn-secondary" id="btn-google">Entrar com Google</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Conhecer usuário -->
+    <section id="persona" class="section">
+      <header>
+        <div class="section-title-row">
+          <div>
+            <h2>Queremos te conhecer</h2>
+            <p class="subtitle">Selecione rapidamente o que mais combina com você.</p>
+          </div>
+          <div class="logo-circle" style="width:40px;height:40px;font-size:20px;">✨</div>
+        </div>
+      </header>
+      <div class="card">
+        <p><strong>Objetivo principal</strong></p>
+        <div class="chip-row" id="chip-objetivo"></div>
+        <p><strong>Preferências</strong></p>
+        <div class="chip-row" id="chip-preferencias"></div>
+        <p><strong>Restrições</strong></p>
+        <div class="chip-row" id="chip-restricoes"></div>
+        <div class="divider"></div>
+        <div class="mini-cards" id="persona-sugestoes"></div>
+        <div class="divider"></div>
+        <button id="btn-go-quiz">Continuar e detalhar perfil</button>
+      </div>
+    </section>
+
+    <!-- Questionário -->
+    <section id="quiz" class="section">
+      <header>
+        <h2>Nos conte mais sobre você</h2>
+        <p class="subtitle">Personalize suas recomendações com base no seu perfil.</p>
+      </header>
+      <div class="card">
+        <div class="input-group">
+          <input id="idade" type="number" placeholder="Idade" />
+          <input id="peso" type="number" placeholder="Peso (kg)" />
+          <select id="atividade">
+            <option value="Sedentário">Sedentário</option>
+            <option value="Leve">Leve</option>
+            <option value="Moderado" selected>Moderado</option>
+            <option value="Intenso">Intenso</option>
+          </select>
+          <input id="exercicio" type="text" placeholder="Tipo de exercício (musculação, corrida...)" />
+          <input id="objetivo" type="text" placeholder="Objetivo (massa, desempenho, saúde...)" />
+        </div>
+        <button id="btn-save-quiz">Salvar e ver recomendações</button>
+      </div>
+    </section>
+
+    <!-- Principal -->
+    <section id="home" class="section">
+      <div class="topbar">
+        <div>
+          <h2>Busca</h2>
+          <p class="subtitle">Filtre pelos suplementos recomendados para você.</p>
+        </div>
+        <button class="pill-btn" id="btn-premium">Seja Premium</button>
+      </div>
+      <div class="search-bar">
+        <input id="search" type="search" placeholder="Busque por nome (ex.: Creatina)" />
+        <button id="search-btn" class="search-btn" aria-label="Buscar">🔍</button>
+      </div>
+      <div class="select-filter">
+        <select id="view-mode">
+          <option value="recommended">Recomendados</option>
+          <option value="popular">Populares</option>
+        </select>
+      </div>
+      <div class="card" style="margin-bottom:12px;" id="personal-card">
+        <div class="section-title-row" style="margin-bottom:6px;">
+          <div>
+            <strong>Recomendações personalizadas</strong>
+            <p class="subtitle" id="personal-summary">Defina seu perfil para priorizarmos suplementos.</p>
+          </div>
+          <button class="pill-btn" style="padding:8px 10px;font-size:12px;" id="btn-ajustar-perfil">Ajustar</button>
+        </div>
+        <div class="mini-cards" id="personal-recos"></div>
+      </div>
+      <div id="supplement-list"></div>
+    </section>
+
+    <!-- Detalhes -->
+    <section id="details" class="section">
+      <div class="detail-hero">
+        <img id="detail-image" alt="Imagem do suplemento" />
+        <div class="title-row">
+          <h2 id="detail-name"></h2>
+          <div id="detail-reliability" class="badge"></div>
+        </div>
+        <p class="subtitle" id="detail-short"></p>
+      </div>
+      <div class="detail-section">
+        <h3>O que é</h3>
+        <p id="detail-what" class="subtitle"></p>
+      </div>
+      <div class="detail-section">
+        <h3>Como funciona</h3>
+        <ul id="detail-how"></ul>
+      </div>
+      <div class="detail-section">
+        <h3>Quando é indicado</h3>
+        <p id="detail-when" class="subtitle"></p>
+      </div>
+      <div class="detail-section">
+        <h3>Cuidados</h3>
+        <p id="detail-care" class="subtitle"></p>
+      </div>
+      <div class="detail-section">
+        <h3>Fontes / Referências</h3>
+        <ul id="detail-refs"></ul>
+      </div>
+    </section>
+
+    <!-- Histórico -->
+    <section id="history" class="section">
+      <div class="topbar">
+        <h2>Histórico</h2>
+        <p class="subtitle">Buscas e suplementos visualizados.</p>
+      </div>
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="searches">Pesquisa</button>
+        <button class="tab-btn" data-tab="supps">Suplementos</button>
+      </div>
+      <div id="tab-searches" class="history-list"></div>
+      <div id="tab-supps" class="history-list" style="display:none;"></div>
+    </section>
+
+    <!-- Perfil -->
+    <section id="profile" class="section">
+      <div class="profile-header">
+        <div class="avatar">JP</div>
+        <div>
+          <h3 id="profile-name">João Pedro</h3>
+          <p class="subtitle" id="profile-email">usuario@email.com</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="options-list">
+          <div class="option" data-option="account">Dados da conta <span>›</span></div>
+          <div class="option" data-option="share">Compartilhe com um amigo <span>›</span></div>
+          <div class="option" data-option="premium">Seja Premium <span>›</span></div>
+          <div class="option" data-option="terms">Termos de uso <span>›</span></div>
+          <div class="option" data-option="help">Ajuda e suporte <span>›</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Câmera placeholder -->
+    <section id="camera" class="section">
+      <div class="topbar">
+        <h2>Leitura por foto</h2>
+        <p class="subtitle">Futuro recurso para analisar o rótulo do suplemento.</p>
+      </div>
+      <div class="camera-placeholder">
+        <p>📷 Em breve: tire uma foto do rótulo e receba um parecer instantâneo.</p>
+      </div>
+    </section>
+  </div>
+
+  <!-- Barra de navegação -->
+  <div class="navbar">
+    <div class="inner">
+      <button class="nav-btn" data-target="history">
+        <span class="nav-icon">🕑</span>
+        <span>Histórico</span>
+      </button>
+      <button class="nav-btn active" data-target="home">
+        <span class="nav-icon">🔍</span>
+        <span>Busca</span>
+      </button>
+      <button class="nav-btn" data-target="camera">
+        <span class="nav-icon">📸</span>
+        <span>Câmera</span>
+      </button>
+      <button class="nav-btn" id="btn-chat">
+        <span class="nav-icon">💬</span>
+        <span>Chatbot</span>
+      </button>
+      <button class="nav-btn" data-target="profile">
+        <span class="nav-icon">👤</span>
+        <span>Perfil</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Chat modal -->
+  <div class="modal" id="chat-modal">
+    <div class="modal-content">
+      <div class="topbar" style="margin-bottom: 6px;">
+        <h3>Chatbot</h3>
+        <button class="pill-btn" id="close-chat">Fechar</button>
+      </div>
+      <div class="chat-area">Olá! Em breve você poderá conversar com a ComprovaFIT aqui.</div>
+      <input type="text" placeholder="Digite sua pergunta..." />
+      <button style="margin-top:10px;">Enviar</button>
+    </div>
+  </div>
+
+  <script>
+    const sections = document.querySelectorAll('.section');
+    const navButtons = document.querySelectorAll('.nav-btn[data-target]');
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const historySearchList = document.getElementById('tab-searches');
+    const historySuppList = document.getElementById('tab-supps');
+    const navbar = document.querySelector('.navbar');
+
+    const personaOptions = {
+      objetivo: ['Ganho de massa', 'Emagrecimento', 'Desempenho', 'Saúde geral', 'Energia extra', 'Recuperação'],
+      preferencias: ['Vegano/Vegetariano', 'Baixo carbo', 'Zero lactose', 'Sem cafeína', 'Natural/plant based'],
+      restricoes: ['Hipertensão', 'Diabetes', 'Gestação', 'Doença renal', 'Sensibilidade a cafeína']
+    };
+
+    const supplements = [
+      {
+        id: 'creatina',
+        name: 'Creatina Monohidratada',
+        short: 'Aumenta força, potência e volume muscular de forma segura.',
+        reliability: 'alta',
+        image: 'img/creatina.png',
+        category: 'recommended',
+        tags: ['desempenho', 'força', 'massa'],
+        what: 'Suplemento que repõe estoques de fosfocreatina, acelerando a regeneração de ATP.',
+        how: ['Melhora explosão e velocidade.', 'Ajuda a treinar mais pesado.', 'Pode favorecer ganho de massa magra.'],
+        when: 'Diariamente, com ou sem treino, para manter saturação muscular.',
+        care: 'Boa hidratação e acompanhamento em caso de doença renal.',
+        refs: [
+          { label: 'ISSN Position Stand 2022', url: 'https://jissn.biomedcentral.com/articles/10.1186/s12970-022-00491-5' },
+          { label: 'Sports Medicine 2021', url: 'https://link.springer.com/article/10.1007/s40279-021-01416-z' }
+        ]
+      },
+      {
+        id: 'whey',
+        name: 'Whey Protein Concentrado',
+        short: 'Proteína completa para recuperar e manter massa magra.',
+        reliability: 'alta',
+        image: 'img/whey.png',
+        category: 'popular',
+        tags: ['massa', 'recuperação'],
+        what: 'Derivado do soro do leite, rico em aminoácidos essenciais e BCAAs.',
+        how: ['Estimula síntese proteica.', 'Complementa ingestão diária.', 'Prático no pós-treino.'],
+        when: 'Pós-treino ou entre refeições para bater meta de proteína.',
+        care: 'Avaliar tolerância à lactose; versões isoladas têm menos carboidratos.',
+        refs: [
+          { label: 'Nutrition Journal 2021', url: 'https://nutritionj.biomedcentral.com/articles/10.1186/s12937-021-00718-1' },
+          { label: 'J Appl Physiol 2017', url: 'https://journals.physiology.org/doi/full/10.1152/japplphysiol.00114.2017' }
+        ]
+      },
+      {
+        id: 'cafeina',
+        name: 'Cafeína Anidra',
+        short: 'Melhora foco, percepção de esforço e alerta pré-treino.',
+        reliability: 'alta',
+        image: 'img/cafeina.png',
+        category: 'popular',
+        tags: ['energia', 'desempenho'],
+        what: 'Estimulante do sistema nervoso central com efeito ergogênico comprovado.',
+        how: ['Diminui sensação de fadiga.', 'Melhora tempo de reação.', 'Aumenta capacidade de esforço.'],
+        when: '30-45 minutos antes do treino ou provas.',
+        care: 'Evitar uso noturno; atenção a hipertensão e sensibilidade individual.',
+        refs: [
+          { label: 'ISSN Position Stand 2021', url: 'https://jissn.biomedcentral.com/articles/10.1186/s12970-020-00383-4' },
+          { label: 'Eur J Sport Sci 2020', url: 'https://www.tandfonline.com/doi/full/10.1080/17461391.2020.1771645' }
+        ]
+      },
+      {
+        id: 'beta',
+        name: 'Beta-Alanina',
+        short: 'Tampona ácido lático e sustenta esforços intensos prolongados.',
+        reliability: 'media',
+        image: 'img/beta.png',
+        category: 'recommended',
+        tags: ['resistência', 'desempenho'],
+        what: 'Aminoácido que eleva carnosina muscular, retardando a fadiga.',
+        how: ['Melhora performance em séries longas.', 'Suporta treinos intervalados.', 'Reduz queimação muscular.'],
+        when: 'Uso diário por pelo menos 4 semanas para saturação.',
+        care: 'Pode causar parestesia; dividir a dose ajuda.',
+        refs: [
+          { label: 'ISSN Beta-Alanina 2015', url: 'https://jissn.biomedcentral.com/articles/10.1186/s12970-015-0090-y' },
+          { label: 'Nutrients 2021', url: 'https://www.mdpi.com/2072-6643/13/1/141' }
+        ]
+      },
+      {
+        id: 'vitd',
+        name: 'Vitamina D3',
+        short: 'Suporte imunológico, ósseo e hormonal.',
+        reliability: 'alta',
+        image: 'img/vitd.png',
+        category: 'recommended',
+        tags: ['saúde', 'imunidade'],
+        what: 'Nutriente essencial para metabolismo de cálcio e modulação imune.',
+        how: ['Auxilia densidade óssea.', 'Contribui para imunidade.', 'Relacionada a função muscular.'],
+        when: 'Em caso de baixa exposição solar ou deficiência comprovada.',
+        care: 'Evitar mega doses sem exames; monitorar níveis séricos.',
+        refs: [
+          { label: 'Endocrine Society 2011', url: 'https://academic.oup.com/jcem/article/96/7/1911/2833671' },
+          { label: 'Nutrients 2020', url: 'https://www.mdpi.com/2072-6643/12/6/1637' }
+        ]
+      },
+      {
+        id: 'omega',
+        name: 'Ômega-3 (EPA/DHA)',
+        short: 'Ácidos graxos com ação anti-inflamatória e cardiovascular.',
+        reliability: 'alta',
+        image: 'img/omega.png',
+        category: 'recommended',
+        tags: ['saúde', 'recuperação'],
+        what: 'Gorduras essenciais obtidas de peixes ou algas, que modulam inflamação.',
+        how: ['Reduz marcadores inflamatórios.', 'Auxilia recuperação.', 'Benefícios para saúde cardíaca.'],
+        when: 'Uso contínuo para suporte geral e em fases de treino intenso.',
+        care: 'Checar pureza e interação com anticoagulantes.',
+        refs: [
+          { label: 'AHA Science Advisory 2019', url: 'https://www.ahajournals.org/doi/10.1161/CIR.0000000000000747' },
+          { label: 'Nutrients 2020', url: 'https://www.mdpi.com/2072-6643/12/11/3493' }
+        ]
+      },
+      {
+        id: 'nac',
+        name: 'NAC (N-Acetilcisteína)',
+        short: 'Antioxidante que auxilia imunidade e saúde respiratória.',
+        reliability: 'media',
+        image: 'img/nac.png',
+        category: 'popular',
+        tags: ['saúde', 'imunidade'],
+        what: 'Precursora de glutationa, reforça defesa antioxidante celular.',
+        how: ['Apoia imunidade.', 'Pode reduzir sintomas respiratórios.', 'Auxilia recuperação em cargas altas.'],
+        when: 'Períodos de alto estresse oxidativo ou sazonalidade respiratória.',
+        care: 'Consultar médico se houver uso de medicamentos.',
+        refs: [
+          { label: 'Respiratory Medicine 2018', url: 'https://www.resmedjournal.com/article/S0954-6111(17)30353-3/fulltext' },
+          { label: 'Clin Pharmacol Ther 2020', url: 'https://ascpt.onlinelibrary.wiley.com/doi/full/10.1002/cpt.1795' }
+        ]
+      },
+      {
+        id: 'bcaas',
+        name: 'BCAAs 2:1:1',
+        short: 'Leucina, isoleucina e valina para suporte à recuperação.',
+        reliability: 'baixa',
+        image: 'img/bcaas.png',
+        category: 'popular',
+        tags: ['recuperação', 'energia'],
+        what: 'Aminoácidos de cadeia ramificada envolvidos na síntese proteica.',
+        how: ['Podem reduzir percepção de dor tardia.', 'Contribuem com ingestão total de aminoácidos.', 'Alternativa para treinos em jejum.'],
+        when: 'Antes ou durante treinos longos quando ingestão proteica é insuficiente.',
+        care: 'Efeito menor se consumo de proteína diária já é adequado.',
+        refs: [
+          { label: 'JISSN 2018', url: 'https://jissn.biomedcentral.com/articles/10.1186/s12970-018-0213-3' },
+          { label: 'Nutrients 2019', url: 'https://www.mdpi.com/2072-6643/11/11/2525' }
+        ]
+      },
+      {
+        id: 'electro',
+        name: 'Reidratante com Eletrólitos',
+        short: 'Sódio, potássio e magnésio para hidratação e contração muscular.',
+        reliability: 'media',
+        image: 'img/electro.png',
+        category: 'recommended',
+        tags: ['resistência', 'hidratação'],
+        what: 'Fórmula para repor eletrólitos perdidos no suor durante treinos prolongados.',
+        how: ['Mantém equilíbrio hídrico.', 'Ajuda a prevenir cãibras.', 'Sustenta performance em endurance.'],
+        when: 'Treinos >60 minutos ou em ambientes muito quentes.',
+        care: 'Monitorar ingestão de sódio em casos de hipertensão.',
+        refs: [
+          { label: 'ACSM Position Stand 2007', url: 'https://journals.lww.com/acsm-msse/fulltext/2007/02000/exercise_and_fluid_replacement.22.aspx' },
+          { label: 'Sports Health 2020', url: 'https://journals.sagepub.com/doi/10.1177/1941738120930330' }
+        ]
+      },
+      {
+        id: 'caseina',
+        name: 'Caseína Micelar',
+        short: 'Proteína de digestão lenta para saciedade e recuperação noturna.',
+        reliability: 'media',
+        image: 'img/caseina.png',
+        category: 'recommended',
+        tags: ['massa', 'recuperação'],
+        what: 'Proteína derivada do leite com liberação gradual de aminoácidos.',
+        how: ['Sustenta síntese proteica durante o sono.', 'Ajuda na saciedade.', 'Suporte a manutenção de massa magra.'],
+        when: 'Antes de dormir ou em longos períodos sem refeições.',
+        care: 'Checar tolerância à lactose e alergias a laticínios.',
+        refs: [
+          { label: 'Nutrients 2019', url: 'https://www.mdpi.com/2072-6643/11/10/2250' },
+          { label: 'Br J Nutr 2012', url: 'https://www.cambridge.org/core/journals/british-journal-of-nutrition/article/protein-ingestion-before-sleep/660D61B0E2C6C8D6B4F4C1D893A8B236' }
+        ]
+      },
+      {
+        id: 'glutamina',
+        name: 'Glutamina',
+        short: 'Aminoácido ligado à saúde intestinal e recuperação imunológica.',
+        reliability: 'baixa',
+        image: 'img/glutamina.png',
+        category: 'popular',
+        tags: ['saúde', 'recuperação'],
+        what: 'Aminoácido abundante que serve de combustível para células intestinais e imunes.',
+        how: ['Pode reduzir sintomas gastrointestinais em treinos longos.', 'Suporta imunidade em períodos de estresse.', 'Ajuda em recuperação pós-cirúrgica.'],
+        when: 'Atletas de endurance prolongado ou recuperação hospitalar orientada.',
+        care: 'Evidência esportiva limitada; seguir orientação profissional.',
+        refs: [
+          { label: 'Nutrients 2018', url: 'https://www.mdpi.com/2072-6643/10/6/761' },
+          { label: 'Front Physiol 2020', url: 'https://www.frontiersin.org/articles/10.3389/fphys.2020.00131/full' }
+        ]
+      },
+      {
+        id: 'ashwagandha',
+        name: 'Ashwagandha (KSM-66)',
+        short: 'Adaptógeno que pode auxiliar controle de estresse e desempenho.',
+        reliability: 'media',
+        image: 'img/ashwagandha.png',
+        category: 'recommended',
+        tags: ['energia', 'saúde'],
+        what: 'Extrato de Withania somnifera com potencial de reduzir cortisol e fadiga.',
+        how: ['Pode melhorar VO2máx em praticantes de endurance.', 'Auxilia percepção de estresse.', 'Suporte a qualidade do sono.'],
+        when: 'Uso diário por 6-8 semanas para avaliar resposta.',
+        care: 'Consultar se houver uso de ansiolíticos/hipotensores.',
+        refs: [
+          { label: 'J Int Soc Sports Nutr 2015', url: 'https://jissn.biomedcentral.com/articles/10.1186/s12970-015-0104-9' },
+          { label: 'Medicine 2020', url: 'https://journals.lww.com/md-journal/fulltext/2020/11250/efficacy_and_safety_of_ashwagandha__a.74.aspx' }
+        ]
+      },
+      {
+        id: 'colageno',
+        name: 'Colágeno Tipo II + Vitamina C',
+        short: 'Suporte articular para quem sente desconforto em treinos.',
+        reliability: 'media',
+        image: 'img/colageno.png',
+        category: 'popular',
+        tags: ['saúde', 'recuperação'],
+        what: 'Peptídeos de colágeno específicos para cartilagem associados à vitamina C.',
+        how: ['Pode reduzir dores articulares leves.', 'Fornece aminoácidos para matriz cartilaginosa.', 'Vitamina C apoia síntese de colágeno.'],
+        when: 'Uso diário por 3-6 meses em combinação com fortalecimento.',
+        care: 'Evidência moderada; manter treinamento de suporte articular.',
+        refs: [
+          { label: 'Curr Med Res Opin 2008', url: 'https://www.tandfonline.com/doi/full/10.1185/030079908X280707' },
+          { label: 'Nutrients 2021', url: 'https://www.mdpi.com/2072-6643/13/7/2276' }
+        ]
+      }
+    ];
+
+
+    let navReady = false;
+    let userProfile = {
+      email: '',
+      idade: '',
+      peso: '',
+      atividade: 'Moderado',
+      exercicio: '',
+      objetivo: '',
+      preferencias: [],
+      restricoes: []
+    };
+
+    let historySupplements = [];
+    let historySearches = [];
+    let currentSupplement = null;
+    let lastSearchTerm = '';
+
+    function showSection(id) {
+      sections.forEach(sec => {
+        sec.classList.toggle('active', sec.id === id);
+      });
+      navButtons.forEach(btn => {
+        const target = btn.getAttribute('data-target');
+        btn.classList.toggle('active', target === id);
+      });
+      updateNavVisibility(id);
+      if (id === 'persona') {
+        renderPersonaChips();
+        updatePersonaSuggestions();
+      }
+    }
+
+    function updateNavVisibility(currentId) {
+      const showNav = navReady && !['login', 'persona', 'quiz'].includes(currentId);
+      navbar.classList.toggle('show', showNav);
+      document.body.classList.toggle('nav-active', showNav);
+    }
+
+    function reliabilityBadge(level) {
+      if (level === 'alta') return '👍 Alta';
+      if (level === 'media') return '🟡 Moderada';
+      return '⚠️ Baixa';
+    }
+
+    function reliabilityClass(level) {
+      if (level === 'alta') return 'reliability-high';
+      if (level === 'media') return 'reliability-medium';
+      return 'reliability-low';
+    }
+
+    function computeScore(supp) {
+      let score = 0;
+      const objetivo = (userProfile.objetivo || '').toLowerCase();
+      const objectiveMap = {
+        massa: ['massa', 'hipertrofia', 'força'],
+        emagrecimento: ['emagrec', 'defini', 'peso'],
+        desempenho: ['desempenho', 'performance', 'veloc'],
+        'saúde geral': ['saúde', 'bem-estar', 'imun'],
+        energia: ['energia', 'foco', 'alerta'],
+        recuperação: ['recuperação', 'hidratação', 'anti-inflamat']
+      };
+
+      Object.entries(objectiveMap).forEach(([key, keywords]) => {
+        if (keywords.some(k => objetivo.includes(k))) {
+          if (supp.tags.some(t => (key === 'energia' ? 'energia' : key).includes(t) || t.includes(key.replace(' ', '')))) {
+            score += 3;
+          }
+          if (supp.short.toLowerCase().includes(key.split(' ')[0])) score += 1;
+        }
+      });
+
+      if (userProfile.atividade === 'Intenso' && supp.tags.includes('resistência')) score += 2;
+      if (userProfile.exercicio?.toLowerCase().includes('corrida') && supp.tags.includes('resistência')) score += 1;
+      if (userProfile.exercicio?.toLowerCase().includes('muscul') && supp.tags.includes('massa')) score += 1;
+
+      if (userProfile.preferencias.includes('Sem cafeína') || userProfile.restricoes.includes('Sensibilidade a cafeína')) {
+        if (supp.id === 'cafeina') score -= 5;
+      }
+      if (userProfile.restricoes.includes('Doença renal') && supp.id === 'creatina') score -= 4;
+      if (userProfile.preferencias.includes('Zero lactose') && supp.id === 'whey') score -= 3;
+      if (userProfile.restricoes.includes('Hipertensão') && supp.id === 'cafeina') score -= 3;
+
+      if (supp.category === 'recommended') score += 1;
+      return score;
+    }
+
+    function renderList() {
+      const listEl = document.getElementById('supplement-list');
+      const term = document.getElementById('search').value.toLowerCase();
+      const mode = document.getElementById('view-mode').value;
+      const personalCard = document.getElementById('personal-card');
+
+      if (personalCard) {
+        personalCard.style.display = term ? 'none' : 'block';
+      }
+
+      let filtered = supplements.filter(s => s.name.toLowerCase().includes(term));
+
+      filtered = filtered.sort((a, b) => computeScore(b) - computeScore(a));
+
+      if (mode === 'popular') {
+        filtered = filtered.filter(s => s.category === 'popular').concat(
+          filtered.filter(s => s.category !== 'popular')
+        );
+      }
+
+      listEl.innerHTML = filtered.map(supp => `
+        <div class="supplement-item" data-id="${supp.id}">
+          <img src="${supp.image}" alt="${supp.name}" />
+          <div class="supplement-info">
+            <h4>${supp.name}</h4>
+            <p>${supp.short}</p>
+          </div>
+          <div class="badge ${reliabilityClass(supp.reliability)}">${reliabilityBadge(supp.reliability)}</div>
+        </div>
+      `).join('');
+
+      listEl.querySelectorAll('.supplement-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const sup = supplements.find(s => s.id === item.dataset.id);
+          openDetails(sup);
+          addHistorySupplement(sup);
+        });
+      });
+    }
+
+    function updatePersonalRecos() {
+      const target = document.getElementById('personal-recos');
+      const summary = document.getElementById('personal-summary');
+      const scored = [...supplements].sort((a, b) => computeScore(b) - computeScore(a));
+      const topThree = scored.slice(0, 3);
+
+      if (!userProfile.objetivo && !userProfile.preferencias.length && !userProfile.restricoes.length) {
+        summary.textContent = 'Defina seu perfil para priorizarmos suplementos.';
+      } else {
+        const parts = [];
+        if (userProfile.objetivo) parts.push(`foco em ${userProfile.objetivo}`);
+        if (userProfile.preferencias.length) parts.push(`preferências: ${userProfile.preferencias.join(', ')}`);
+        if (userProfile.restricoes.length) parts.push(`restrições: ${userProfile.restricoes.join(', ')}`);
+        summary.textContent = `Recomendamos primeiro com ${parts.join(' | ')}`;
+      }
+
+      target.innerHTML = topThree.map(s => `
+        <div class="mini-card">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <img src="${s.image}" alt="${s.name}" style="width:48px;height:48px;border-radius:14px;object-fit:cover;" />
+            <div>
+              <strong>${s.name}</strong>
+              <p class="subtitle" style="margin:0;">${reliabilityBadge(s.reliability)}</p>
+            </div>
+          </div>
+          <p class="subtitle" style="margin:0;">${s.short}</p>
+        </div>
+      `).join('');
+    }
+
+    function renderPersonaChips() {
+      const createChips = (containerId, type, multiple = false) => {
+        const container = document.getElementById(containerId);
+        container.innerHTML = '';
+        personaOptions[type].forEach(opt => {
+          const chip = document.createElement('button');
+          chip.className = 'chip';
+          chip.textContent = opt;
+          if ((!multiple && userProfile[type] === opt) || (multiple && userProfile[type].includes(opt))) {
+            chip.classList.add('active');
+          }
+          chip.addEventListener('click', () => {
+            if (multiple) {
+              const arr = new Set(userProfile[type]);
+              arr.has(opt) ? arr.delete(opt) : arr.add(opt);
+              userProfile[type] = [...arr];
+              chip.classList.toggle('active');
+            } else {
+              userProfile[type] = opt;
+              container.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+              chip.classList.add('active');
+              document.getElementById('objetivo').value = opt;
+            }
+            updatePersonaSuggestions();
+          });
+          container.appendChild(chip);
+        });
+      };
+
+      createChips('chip-objetivo', 'objetivo', false);
+      createChips('chip-preferencias', 'preferencias', true);
+      createChips('chip-restricoes', 'restricoes', true);
+    }
+
+    function updatePersonaSuggestions() {
+      const box = document.getElementById('persona-sugestoes');
+      const scored = [...supplements].sort((a, b) => computeScore(b) - computeScore(a)).slice(0, 4);
+      box.innerHTML = scored.map(s => `
+        <div class="mini-card">
+          <strong>${s.name}</strong>
+          <p class="subtitle" style="margin:0;">${s.short}</p>
+          <span class="badge ${reliabilityClass(s.reliability)}">${reliabilityBadge(s.reliability)}</span>
+        </div>
+      `).join('');
+      updatePersonalRecos();
+    }
+
+    function addHistorySupplement(sup) {
+      historySupplements = [sup, ...historySupplements.filter(h => h.id !== sup.id)].slice(0, 15);
+      updateHistoryUI();
+    }
+
+    function addSearchTerm(term) {
+      if (!term || term === lastSearchTerm) return;
+      lastSearchTerm = term;
+      historySearches = [term, ...historySearches.filter(t => t !== term)].slice(0, 15);
+      updateHistoryUI();
+    }
+
+    function openDetails(supp) {
+      currentSupplement = supp;
+      document.getElementById('detail-image').src = supp.image;
+      document.getElementById('detail-name').textContent = supp.name;
+      const badge = document.getElementById('detail-reliability');
+      badge.textContent = reliabilityBadge(supp.reliability);
+      badge.className = `badge ${reliabilityClass(supp.reliability)}`;
+      document.getElementById('detail-short').textContent = supp.short;
+      document.getElementById('detail-what').textContent = supp.what;
+      const howList = document.getElementById('detail-how');
+      howList.innerHTML = supp.how.map(item => `<li>${item}</li>`).join('');
+      document.getElementById('detail-when').textContent = supp.when;
+      document.getElementById('detail-care').textContent = supp.care;
+      const refList = document.getElementById('detail-refs');
+      refList.innerHTML = supp.refs.map(ref => `<li><a href="${ref.url}" target="_blank" rel="noopener noreferrer">${ref.label}</a></li>`).join('');
+      showSection('details');
+    }
+
+    function updateHistoryUI() {
+      historySearchList.innerHTML = historySearches.length
+        ? historySearches.map(term => `<div class="card">🔍 ${term}</div>`).join('')
+        : '<p class="subtitle">Nenhuma pesquisa ainda.</p>';
+
+      historySuppList.innerHTML = historySupplements.length
+        ? historySupplements.map(s => `
+          <div class="history-item">
+            <img src="${s.image}" alt="${s.name}" />
+            <div>
+              <strong>${s.name}</strong>
+              <p class="subtitle">${s.short}</p>
+            </div>
+            <div class="badge ${reliabilityClass(s.reliability)}">${reliabilityBadge(s.reliability)}</div>
+          </div>
+        `).join('')
+        : '<p class="subtitle">Nenhum suplemento visualizado.</p>';
+    }
+
+    document.getElementById('btn-login').addEventListener('click', () => {
+      const email = document.getElementById('login-email').value.trim();
+      userProfile.email = email || 'usuario@comprovafit.com';
+      document.getElementById('profile-email').textContent = userProfile.email;
+      showSection('persona');
+    });
+
+    document.getElementById('btn-go-quiz').addEventListener('click', () => {
+      showSection('quiz');
+    });
+
+    document.getElementById('btn-google').addEventListener('click', () => {
+      alert('Login com Google em desenvolvimento.');
+    });
+
+    document.getElementById('btn-save-quiz').addEventListener('click', () => {
+      userProfile = {
+        ...userProfile,
+        idade: document.getElementById('idade').value,
+        peso: document.getElementById('peso').value,
+        atividade: document.getElementById('atividade').value,
+        exercicio: document.getElementById('exercicio').value,
+        objetivo: document.getElementById('objetivo').value,
+      };
+      navReady = true;
+      document.getElementById('profile-name').textContent = userProfile.exercicio || 'João Pedro';
+      updatePersonaSuggestions();
+      renderList();
+      showSection('home');
+    });
+
+    document.getElementById('btn-ajustar-perfil').addEventListener('click', () => {
+      showSection('persona');
+    });
+
+    document.getElementById('btn-premium').addEventListener('click', () => {
+      alert('Planos premium em desenvolvimento.');
+    });
+
+    function handleSearchSubmit() {
+      const term = document.getElementById('search').value.trim();
+      if (term) addSearchTerm(term);
+      renderList();
+    }
+
+    document.getElementById('search').addEventListener('input', () => {
+      renderList();
+    });
+
+    document.getElementById('search').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        handleSearchSubmit();
+      }
+    });
+
+    document.getElementById('search-btn').addEventListener('click', handleSearchSubmit);
+
+    document.getElementById('view-mode').addEventListener('change', renderList);
+
+    navButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = btn.getAttribute('data-target');
+        if (target) {
+          showSection(target);
+        }
+      });
+    });
+
+    tabButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        tabButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const tab = btn.dataset.tab;
+        document.getElementById('tab-searches').style.display = tab === 'searches' ? 'flex' : 'none';
+        document.getElementById('tab-supps').style.display = tab === 'supps' ? 'flex' : 'none';
+      });
+    });
+
+    document.querySelectorAll('.option').forEach(opt => {
+      opt.addEventListener('click', () => alert('Recurso em desenvolvimento.'));
+    });
+
+    document.getElementById('btn-chat').addEventListener('click', () => {
+      document.getElementById('chat-modal').classList.add('active');
+    });
+
+    document.getElementById('close-chat').addEventListener('click', () => {
+      document.getElementById('chat-modal').classList.remove('active');
+    });
+
+    // Inicialização
+    renderPersonaChips();
+    updatePersonaSuggestions();
+    renderList();
+    updateHistoryUI();
+    document.getElementById('tab-supps').style.display = 'none';
+    updateNavVisibility('login');
+  </script>
+</body>
+</html>
