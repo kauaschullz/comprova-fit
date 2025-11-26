@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -67,6 +65,58 @@
       box-shadow: 0 8px 18px rgba(0, 176, 80, 0.35);
     }
 
+    .login-hero {
+      position: relative;
+      overflow: hidden;
+      background: radial-gradient(circle at 20% 20%, rgba(0, 176, 80, 0.16), transparent 48%),
+        linear-gradient(135deg, #f7fff9 0%, #e6f6ea 45%, #fdfdfd 100%);
+      padding: 26px 18px 20px;
+      border-radius: 0 0 28px 28px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    }
+
+    .hero-tagline {
+      display: grid;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .hero-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .pill-light {
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(0, 176, 80, 0.08);
+      color: var(--dark);
+      font-weight: 600;
+      font-size: 12px;
+      border: 1px solid rgba(0, 176, 80, 0.25);
+    }
+
+    .login-metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .metric-card {
+      background: white;
+      border-radius: 14px;
+      padding: 10px 12px;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.04);
+    }
+
+    .metric-card strong {
+      display: block;
+      font-size: 18px;
+    }
+
     h1, h2, h3 {
       color: var(--dark);
     }
@@ -106,27 +156,28 @@
       margin-bottom: 12px;
     }
 
-    .choice-list {
-      display: flex;
-      flex-direction: column;
+    .choice-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
       gap: 10px;
       margin: 8px 0 16px;
     }
 
     .choice-item {
-      display: flex;
+      display: grid;
+      grid-template-columns: auto 1fr;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       padding: 10px 12px;
       border-radius: 14px;
-      border: 1px solid rgba(0, 0, 0, 0.12);
-      background: #f9fff9;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      background: linear-gradient(135deg, #f9fff9 0%, #ffffff 100%);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
     }
 
     .choice-item input {
-      width: 18px;
-      height: 18px;
+      width: 16px;
+      height: 16px;
       accent-color: var(--green);
       cursor: pointer;
     }
@@ -135,6 +186,7 @@
       font-weight: 600;
       color: var(--dark);
       line-height: 1.3;
+      font-size: 14px;
     }
 
     .mini-cards {
@@ -561,7 +613,7 @@
   <div class="app-shell">
     <!-- Login -->
     <section id="login" class="section active">
-      <header>
+      <div class="login-hero">
         <div class="logo">
           <div class="logo-circle">💪</div>
           <div>
@@ -569,9 +621,27 @@
             <p class="subtitle">Compre apenas os suplementos que você precisa</p>
           </div>
         </div>
-      </header>
-      <div class="card">
-        <p class="subtitle">Recomendações com base científica e personalizadas para seus objetivos.</p>
+        <div class="hero-tagline">
+          <strong>Guia confiável em formato de app</strong>
+          <div class="hero-pills">
+            <span class="pill-light">Base científica</span>
+            <span class="pill-light">Mobile-first</span>
+            <span class="pill-light">Recomendações rápidas</span>
+          </div>
+        </div>
+        <div class="login-metrics">
+          <div class="metric-card">
+            <strong>+50k</strong>
+            <span class="subtitle" style="margin:0;">consultas simuladas</span>
+          </div>
+          <div class="metric-card">
+            <strong>3 passos</strong>
+            <span class="subtitle" style="margin:0;">para personalizar</span>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:14px;">
+        <p class="subtitle">Acesse para receber recomendações com base científica e personalizadas para seus objetivos.</p>
         <div class="input-group">
           <input id="login-email" type="email" placeholder="Email" />
           <input id="login-password" type="password" placeholder="Senha" />
@@ -585,22 +655,27 @@
 
     <!-- Conhecer usuário -->
     <section id="persona" class="section">
-      <header>
-        <div class="section-title-row">
+      <div class="login-hero" style="padding:22px 18px 18px;border-radius:18px;">
+        <div class="section-title-row" style="align-items:flex-start;">
           <div>
-            <h2>Queremos te conhecer</h2>
-            <p class="subtitle">Selecione rapidamente o que mais combina com você.</p>
+            <h2 style="margin-bottom:4px;">Queremos te conhecer</h2>
+            <p class="subtitle" style="margin-bottom:8px;">Escolha o que faz sentido para você. Em poucos toques deixamos as recomendações sob medida.</p>
           </div>
-          <div class="logo-circle" style="width:40px;height:40px;font-size:20px;">✨</div>
+          <div class="logo-circle" style="width:44px;height:44px;font-size:20px;">✨</div>
         </div>
-      </header>
-      <div class="card">
+        <div class="hero-pills">
+          <span class="pill-light">2 min</span>
+          <span class="pill-light">Melhor UX mobile</span>
+          <span class="pill-light">Sugestões inteligentes</span>
+        </div>
+      </div>
+      <div class="card" style="margin-top:14px;">
         <p><strong>Objetivo principal</strong></p>
-        <div class="choice-list" id="chip-objetivo"></div>
+        <div class="choice-grid" id="chip-objetivo"></div>
         <p><strong>Preferências</strong></p>
-        <div class="choice-list" id="chip-preferencias"></div>
+        <div class="choice-grid" id="chip-preferencias"></div>
         <p><strong>Restrições</strong></p>
-        <div class="choice-list" id="chip-restricoes"></div>
+        <div class="choice-grid" id="chip-restricoes"></div>
         <button id="btn-go-quiz">Continuar e detalhar perfil</button>
       </div>
     </section>
