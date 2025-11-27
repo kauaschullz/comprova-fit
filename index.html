@@ -11,7 +11,20 @@
       --gray: #666;
       --light-gray: #f5f5f5;
       --border: #0f0f0f;
+      --surface: #fff;
+      --muted-surface: #fdfdfd;
+      --muted-strong: #f7fff9;
       --max-width: 430px;
+    }
+
+    body.dark-theme {
+      --dark: #f5f5f5;
+      --gray: #c7c7c7;
+      --light-gray: #0f1210;
+      --border: #2a2d2b;
+      --surface: #0d0f0d;
+      --muted-surface: #131513;
+      --muted-strong: #0f1a12;
     }
 
     * {
@@ -27,18 +40,29 @@
       display: flex;
       justify-content: center;
       padding: 20px 12px 80px;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    body.dark-theme {
+      background: radial-gradient(circle at 25% 20%, rgba(0, 176, 80, 0.1), transparent 36%), #050605;
     }
 
     .app-shell {
       width: 100%;
       max-width: var(--max-width);
-      background: white;
+      background: var(--surface);
       border: 1px solid rgba(0, 0, 0, 0.08);
       border-radius: 24px;
       box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
       overflow: hidden;
       position: relative;
       min-height: 100vh;
+      transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    body.dark-theme .app-shell {
+      border-color: #1f1f1f;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
     }
 
     header {
@@ -142,6 +166,7 @@
       padding: 14px 18px 110px;
       min-height: 100vh;
       background: var(--light-gray);
+      transition: background 0.3s ease;
     }
 
     .section.active {
@@ -320,11 +345,56 @@
     }
 
     .card {
-      background: #fff;
+      background: var(--surface);
       border: 1px solid rgba(0, 0, 0, 0.06);
       border-radius: 18px;
       padding: 14px;
       box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+      transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    body.dark-theme .card,
+    body.dark-theme .search-bar,
+    body.dark-theme .chat-input-row,
+    body.dark-theme .history-item,
+    body.dark-theme .supplement-item,
+    body.dark-theme .camera-box,
+    body.dark-theme .tab-btn.active,
+    body.dark-theme .mini-card,
+    body.dark-theme .choice-item,
+    body.dark-theme .badge,
+    body.dark-theme .chat-area {
+      background: var(--muted-surface);
+      border-color: #1f1f1f;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.3);
+    }
+
+    body.dark-theme .supplement-item,
+    body.dark-theme .history-item {
+      border-bottom-color: #1f1f1f;
+    }
+
+    body.dark-theme .search-bar input,
+    body.dark-theme input,
+    body.dark-theme select,
+    body.dark-theme textarea {
+      background: #0d0f0d;
+      color: var(--dark);
+      border-color: #2b2d2b;
+    }
+
+    body.dark-theme .subtitle,
+    body.dark-theme p.subtitle,
+    body.dark-theme .chat-empty,
+    body.dark-theme .chat-meta {
+      color: #c7c7c7;
+    }
+
+    body.dark-theme .pill-btn,
+    body.dark-theme button,
+    body.dark-theme .pill-btn:active,
+    body.dark-theme button:active {
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.4);
     }
 
     .topbar {
@@ -346,13 +416,23 @@
       box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
     }
 
+    .theme-toggle {
+      width: 100%;
+      justify-content: center;
+      text-align: center;
+      margin-top: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
     .search-bar {
       display: flex;
       gap: 10px;
       align-items: center;
       margin-bottom: 10px;
       padding: 8px 10px;
-      background: #fdfdfd;
+      background: var(--muted-surface);
       border: 1px solid rgba(0, 0, 0, 0.08);
       border-radius: 18px;
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
@@ -532,6 +612,12 @@
       padding: 16px;
       border-radius: 14px;
       background: #fff;
+    }
+
+    body.dark-theme .empty-state {
+      background: #0d0f0d;
+      border-color: #1f1f1f;
+      color: #c7c7c7;
     }
 
     .profile-header {
@@ -1068,6 +1154,7 @@
           <div class="option" data-option="terms">Termos de uso <span>›</span></div>
           <div class="option" data-option="help">Ajuda e suporte <span>›</span></div>
         </div>
+        <button type="button" class="pill-btn theme-toggle" id="theme-toggle">🌙 Ativar tema escuro</button>
       </div>
     </section>
 
@@ -1396,6 +1483,7 @@
 
 
     let navReady = false;
+    let theme = 'light';
     let userProfile = {
       email: '',
       idade: '',
@@ -1414,7 +1502,7 @@
     let cameraStream = null;
     let currentFacing = 'environment';
     const capturedPhotos = [];
-    const STATE_KEY = 'comprovafit-state-v2';
+    const STATE_KEY = 'comprovafit-state-v3';
 
     // ---------- Estado persistente ----------
     function saveState() {
@@ -1423,7 +1511,8 @@
           userProfile,
           historySupplements,
           historySearches,
-          navReady
+          navReady,
+          theme
         };
         localStorage.setItem(STATE_KEY, JSON.stringify(payload));
       } catch (err) {
@@ -1440,9 +1529,23 @@
         historySupplements = parsed.historySupplements || [];
         historySearches = parsed.historySearches || [];
         navReady = !!parsed.navReady;
+        theme = parsed.theme || 'light';
       } catch (err) {
         console.warn('Não foi possível carregar o estado', err);
       }
+    }
+
+    function applyTheme(selected = theme) {
+      theme = selected;
+      document.body.classList.toggle('dark-theme', theme === 'dark');
+      updateThemeToggleLabel();
+    }
+
+    function updateThemeToggleLabel() {
+      const btn = document.getElementById('theme-toggle');
+      if (!btn) return;
+      const isDark = theme === 'dark';
+      btn.textContent = isDark ? '☀️ Voltar ao tema claro' : '🌙 Ativar tema escuro';
     }
 
     function showSection(id) {
@@ -1899,6 +2002,12 @@
       alert('Planos premium em desenvolvimento.');
     });
 
+    document.getElementById('theme-toggle').addEventListener('click', () => {
+      const nextTheme = theme === 'dark' ? 'light' : 'dark';
+      applyTheme(nextTheme);
+      saveState();
+    });
+
     function handleSearchSubmit() {
       const term = document.getElementById('search').value.trim();
       if (term) addSearchTerm(term);
@@ -1957,6 +2066,7 @@
 
     // Inicialização
     loadState();
+    applyTheme(theme);
     hydrateProfileInputs();
     renderPersonaChips();
     updatePersonaSuggestions();
