@@ -691,7 +691,7 @@
       border-radius: 16px;
       border: 1px solid rgba(0, 0, 0, 0.1);
       background: #0f0f0f;
-      min-height: 240px;
+      min-height: 260px;
     }
 
     .camera-overlay {
@@ -701,6 +701,15 @@
       border-radius: 18px;
       pointer-events: none;
       box-shadow: 0 0 0 999px rgba(0, 0, 0, 0.25) inset;
+    }
+
+    .camera-overlay::after {
+      content: '';
+      position: absolute;
+      inset: 18%;
+      border: 1px solid rgba(0, 176, 80, 0.6);
+      border-radius: 14px;
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.4);
     }
 
     .camera-stage video,
@@ -714,6 +723,20 @@
     .camera-stage canvas {
       display: none;
       background: #000;
+    }
+
+    .camera-stage.flash::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.55);
+      animation: flash 320ms ease forwards;
+      pointer-events: none;
+    }
+
+    @keyframes flash {
+      from { opacity: 0.7; }
+      to { opacity: 0; }
     }
 
     .capture-feedback {
@@ -732,10 +755,46 @@
     .camera-actions {
       display: flex;
       gap: 10px;
+      flex-wrap: wrap;
     }
 
     .camera-actions button {
       flex: 1;
+    }
+
+    .capture-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .capture-card {
+      background: #fff;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      border-radius: 12px;
+      padding: 8px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .capture-thumb {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      background: #f5f5f5;
+    }
+
+    .capture-meta {
+      font-size: 12px;
+      color: var(--gray);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     @media (min-width: 900px) {
@@ -949,7 +1008,17 @@
         <div class="camera-status" id="camera-status">🎯 Toque em "Ativar câmera" para tentar abrir o dispositivo.</div>
         <div class="camera-actions">
           <button id="btn-start-camera">Ativar câmera</button>
+          <button class="btn-secondary" id="btn-switch-camera">Alternar câmera</button>
           <button class="btn-secondary" id="btn-capture">Tirar foto</button>
+        </div>
+      </div>
+      <div class="card" style="margin-top:12px;">
+        <div class="section-title-row" style="margin-bottom:8px;">
+          <strong>Capturas recentes</strong>
+          <span class="subtitle" style="margin:0;font-size:13px;">Guardado só no seu dispositivo</span>
+        </div>
+        <div id="capture-gallery" class="capture-grid">
+          <div class="empty-state">Nenhuma foto capturada ainda.</div>
         </div>
       </div>
     </section>
@@ -1001,11 +1070,14 @@
     const historySearchList = document.getElementById('tab-searches');
     const historySuppList = document.getElementById('tab-supps');
     const navbar = document.querySelector('.navbar');
+    const cameraStage = document.querySelector('.camera-stage');
     const videoEl = document.getElementById('camera-video');
     const canvasEl = document.getElementById('camera-canvas');
     const cameraStatus = document.getElementById('camera-status');
     const startCameraBtn = document.getElementById('btn-start-camera');
+    const switchCameraBtn = document.getElementById('btn-switch-camera');
     const captureBtn = document.getElementById('btn-capture');
+    const captureGallery = document.getElementById('capture-gallery');
 
     const personaOptions = {
       objetivo: ['Ganho de massa', 'Emagrecimento', 'Desempenho', 'Saúde geral', 'Energia extra', 'Recuperação'],
@@ -1255,6 +1327,8 @@
     let currentSupplement = null;
     let lastSearchTerm = '';
     let cameraStream = null;
+    let currentFacing = 'environment';
+    const capturedPhotos = [];
     const STATE_KEY = 'comprovafit-state-v2';
 
     // ---------- Estado persistente ----------
@@ -1297,6 +1371,9 @@
       updateNavVisibility(id);
       if (id !== 'camera') {
         stopCamera();
+      }
+      if (id === 'camera') {
+        updateSwitchLabel();
       }
       if (id === 'persona') {
         renderPersonaChips();
@@ -1547,6 +1624,29 @@
       cameraStatus.classList.toggle('capture-feedback', !isError && message.toLowerCase().includes('capturada'));
     }
 
+    function updateSwitchLabel() {
+      if (!switchCameraBtn) return;
+      const label = currentFacing === 'environment' ? 'Usar câmera frontal' : 'Usar câmera traseira';
+      switchCameraBtn.textContent = label;
+    }
+
+    function renderCapturedPhotos() {
+      if (!captureGallery) return;
+      if (!capturedPhotos.length) {
+        captureGallery.innerHTML = '<div class="empty-state">Nenhuma foto capturada ainda.</div>';
+        return;
+      }
+      captureGallery.innerHTML = capturedPhotos.map(item => `
+        <div class="capture-card">
+          <img class="capture-thumb" src="${item.src}" alt="Captura da câmera" />
+          <div class="capture-meta">
+            <span>${item.facing === 'environment' ? 'Traseira' : 'Frontal'}</span>
+            <span>${item.time}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
     // --- Câmera: controle de lifecycle ---
     function stopCamera() {
       if (cameraStream) {
@@ -1560,6 +1660,7 @@
       if (canvasEl) {
         canvasEl.style.display = 'none';
       }
+      cameraStage?.classList.remove('flash');
     }
 
     async function startCamera() {
@@ -1574,12 +1675,19 @@
 
       try {
         stopCamera();
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        const constraints = { video: { facingMode: { ideal: currentFacing } } };
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
         cameraStream = stream;
         videoEl.srcObject = stream;
         await videoEl.play();
-        setCameraStatus('Câmera ativa. Centralize o rótulo na moldura e toque em "Tirar foto".');
+        setCameraStatus(`Câmera ${currentFacing === 'environment' ? 'traseira' : 'frontal'} ativa. Centralize o rótulo na moldura e toque em "Tirar foto".`);
       } catch (err) {
+        if (currentFacing === 'environment') {
+          currentFacing = 'user';
+          updateSwitchLabel();
+          setCameraStatus('Não foi possível usar a câmera traseira, tentando a frontal...', true);
+          return startCamera();
+        }
         const httpsHint = location.protocol !== 'https:' && location.hostname !== 'localhost'
           ? ' Este recurso precisa de HTTPS ou localhost para funcionar em navegadores modernos.'
           : '';
@@ -1603,6 +1711,16 @@
       ctx.drawImage(videoEl, 0, 0, canvasEl.width, canvasEl.height);
       canvasEl.style.display = 'block';
       videoEl.style.display = 'none';
+      const dataUrl = canvasEl.toDataURL('image/png');
+      capturedPhotos.unshift({
+        src: dataUrl,
+        facing: currentFacing,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      });
+      if (capturedPhotos.length > 12) capturedPhotos.pop();
+      renderCapturedPhotos();
+      cameraStage?.classList.add('flash');
+      setTimeout(() => cameraStage?.classList.remove('flash'), 320);
       setCameraStatus('Foto capturada localmente (não é enviada para o servidor).');
     }
 
@@ -1712,6 +1830,11 @@
 
     startCameraBtn?.addEventListener('click', startCamera);
     captureBtn?.addEventListener('click', capturePhoto);
+    switchCameraBtn?.addEventListener('click', () => {
+      currentFacing = currentFacing === 'environment' ? 'user' : 'environment';
+      updateSwitchLabel();
+      startCamera();
+    });
 
     navButtons.forEach(btn => {
       btn.addEventListener('click', () => {
@@ -1751,6 +1874,8 @@
     updatePersonaSuggestions();
     updateHistoryUI();
     renderList();
+    renderCapturedPhotos();
+    updateSwitchLabel();
     document.getElementById('tab-supps').style.display = 'none';
 
     if (navReady) {
