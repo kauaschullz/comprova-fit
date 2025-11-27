@@ -639,39 +639,117 @@
       font-size: 18px;
     }
 
-    .modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.35);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      z-index: 10;
-    }
-
-    .modal.active {
-      display: flex;
-    }
-
-    .modal-content {
-      background: white;
+    .chat-hero {
+      background: linear-gradient(135deg, #f7fff9 0%, #f1f7f2 60%, #ffffff 100%);
       border-radius: 18px;
-      padding: 16px;
-      width: 100%;
-      max-width: 360px;
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+      padding: 18px;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.05);
+      margin-bottom: 12px;
     }
 
-    .chat-area {
-      background: #f7f7f7;
+    .chat-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-height: 60vh;
+    }
+
+    .chat-prompts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .prompt-chip {
+      padding: 8px 12px;
       border-radius: 14px;
+      background: #eef7ef;
+      border: 1px solid rgba(0, 0, 0, 0.07);
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .chat-feed {
+      background: #0f0f0f;
+      border-radius: 16px;
       padding: 12px;
-      margin: 12px 0;
-      min-height: 90px;
-      border: 1px solid rgba(0, 0, 0, 0.06);
-      color: var(--gray);
+      color: white;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      overflow-y: auto;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+    }
+
+    .chat-empty {
+      color: rgba(255, 255, 255, 0.75);
       font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .chat-bubble {
+      max-width: 90%;
+      padding: 12px 14px;
+      border-radius: 14px;
+      line-height: 1.5;
+      font-size: 14px;
+      white-space: pre-line;
+    }
+
+    .chat-bubble.user {
+      align-self: flex-end;
+      background: #d2f2dd;
+      color: #0b2f15;
+      box-shadow: 0 8px 18px rgba(0, 176, 80, 0.25);
+    }
+
+    .chat-bubble.bot {
+      align-self: flex-start;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .chat-input-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: white;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      border-radius: 14px;
+      padding: 8px 10px;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
+    }
+
+    .chat-input-row input {
+      border: none;
+      background: transparent;
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 15px;
+      outline: none;
+    }
+
+    .chat-send {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--green);
+      color: white;
+      font-weight: 700;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      box-shadow: 0 10px 22px rgba(0, 176, 80, 0.25);
+    }
+
+    .chat-meta {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 12px;
+      margin-bottom: 4px;
     }
 
     .camera-box {
@@ -1039,7 +1117,7 @@
         <span class="nav-icon">📸</span>
         <span>Câmera</span>
       </button>
-      <button class="nav-btn" id="btn-chat">
+      <button class="nav-btn" data-target="chat">
         <span class="nav-icon">💬</span>
         <span>Chatbot</span>
       </button>
@@ -1050,18 +1128,31 @@
     </div>
   </div>
 
-  <!-- Chat modal -->
-  <div class="modal" id="chat-modal">
-    <div class="modal-content">
-      <div class="topbar" style="margin-bottom: 6px;">
-        <h3>Chatbot</h3>
-        <button class="pill-btn" id="close-chat">Fechar</button>
+  <!-- Chatbot -->
+  <section id="chat" class="section">
+    <div class="chat-hero">
+      <div class="section-title-row" style="align-items:flex-start;">
+        <div>
+          <h2 style="margin-bottom:6px;">Chatbot ComprovaFIT</h2>
+          <p class="subtitle" style="margin-bottom:8px;">Tire dúvidas sobre suplementos, evidências e referências científicas.</p>
+          <div class="chat-prompts">
+            <span class="prompt-chip" data-prompt="Quais suplementos você recomenda para ganho de massa?">Recomendar para massa</span>
+            <span class="prompt-chip" data-prompt="Me fale das evidências da creatina">Evidência da creatina</span>
+            <span class="prompt-chip" data-prompt="Quais estudos existem sobre cafeína para desempenho?">Estudos sobre cafeína</span>
+          </div>
+        </div>
       </div>
-      <div class="chat-area">Olá! Em breve você poderá conversar com a ComprovaFIT aqui.</div>
-      <input type="text" placeholder="Digite sua pergunta..." />
-      <button style="margin-top:10px;">Enviar</button>
     </div>
-  </div>
+    <div class="card chat-wrapper">
+      <div class="chat-feed" id="chat-feed">
+        <div class="chat-empty" id="chat-empty">Pronto para ajudar! Faça uma pergunta ou toque em um atalho.</div>
+      </div>
+      <div class="chat-input-row">
+        <input id="chat-input" type="text" placeholder="Pergunte algo..." autocomplete="off" />
+        <button class="chat-send" id="chat-send" aria-label="Enviar">➤</button>
+      </div>
+    </div>
+  </section>
 
   <script>
     const sections = document.querySelectorAll('.section');
@@ -1078,6 +1169,11 @@
     const switchCameraBtn = document.getElementById('btn-switch-camera');
     const captureBtn = document.getElementById('btn-capture');
     const captureGallery = document.getElementById('capture-gallery');
+    const chatFeed = document.getElementById('chat-feed');
+    const chatInput = document.getElementById('chat-input');
+    const chatSend = document.getElementById('chat-send');
+    const chatEmpty = document.getElementById('chat-empty');
+    const promptChips = document.querySelectorAll('.prompt-chip');
 
     const personaOptions = {
       objetivo: ['Ganho de massa', 'Emagrecimento', 'Desempenho', 'Saúde geral', 'Energia extra', 'Recuperação'],
@@ -1329,6 +1425,7 @@
     let cameraStream = null;
     let currentFacing = 'environment';
     const capturedPhotos = [];
+    const chatHistory = [];
     const STATE_KEY = 'comprovafit-state-v2';
 
     // ---------- Estado persistente ----------
@@ -1408,6 +1505,46 @@
       if (level === 'alta') return 'reliability-high';
       if (level === 'media') return 'reliability-medium';
       return 'reliability-low';
+    }
+
+    function appendChatMessage(role, text) {
+      if (!chatFeed) return;
+      chatEmpty?.remove();
+      const bubble = document.createElement('div');
+      bubble.className = `chat-bubble ${role}`;
+      bubble.textContent = text;
+      chatFeed.appendChild(bubble);
+      chatFeed.scrollTop = chatFeed.scrollHeight;
+      chatHistory.push({ role, text });
+    }
+
+    function buildSupplementSnippet(supp) {
+      const refs = supp.refs?.slice(0, 2).map(ref => `${ref.label}: ${ref.url}`).join('\n• ');
+      return `• ${supp.name} (evidência ${reliabilityBadge(supp.reliability)}): ${supp.short}\n  Quando usar: ${supp.when}\n  Cuidados: ${supp.care}${refs ? `\n  Estudos: ${refs}` : ''}`;
+    }
+
+    function craftChatResponse(question) {
+      const term = question.toLowerCase();
+      const matches = supplements.filter(s =>
+        s.name.toLowerCase().includes(term) ||
+        s.short.toLowerCase().includes(term) ||
+        s.what.toLowerCase().includes(term) ||
+        s.tags.some(t => t.toLowerCase().includes(term))
+      );
+
+      if (matches.length) {
+        const highlighted = matches.slice(0, 3).map(buildSupplementSnippet).join('\n\n');
+        return `Aqui está o que encontrei:\n${highlighted}`;
+      }
+
+      if (term.includes('recomenda') || term.includes('objetivo') || term.includes('melhor')) {
+        const scored = [...supplements].sort((a, b) => computeScore(b) - computeScore(a)).slice(0, 3);
+        const tips = scored.map(buildSupplementSnippet).join('\n\n');
+        const focus = userProfile.objetivo ? ` para ${userProfile.objetivo}` : '';
+        return `Priorizei pelo seu perfil${focus || ''}:\n${tips}`;
+      }
+
+      return 'Posso ajudar com evidências, indicações e cuidados sobre creatina, cafeína, ômega-3, beta-alanina e outros suplementos. Pergunte pelo nome ou peça recomendações para seu objetivo.';
     }
 
     // Calcula priorização de suplementos considerando objetivo, treino e restrições
@@ -1812,6 +1949,18 @@
       renderList();
     }
 
+    function handleChatSubmit() {
+      if (!chatInput) return;
+      const prompt = chatInput.value.trim();
+      if (!prompt) return;
+      appendChatMessage('user', prompt);
+      chatInput.value = '';
+      setTimeout(() => {
+        const reply = craftChatResponse(prompt);
+        appendChatMessage('bot', reply);
+      }, 200);
+    }
+
     document.getElementById('search').addEventListener('input', () => {
       renderList();
     });
@@ -1859,12 +2008,20 @@
       opt.addEventListener('click', () => alert('Recurso em desenvolvimento.'));
     });
 
-    document.getElementById('btn-chat').addEventListener('click', () => {
-      document.getElementById('chat-modal').classList.add('active');
+    chatSend?.addEventListener('click', handleChatSubmit);
+    chatInput?.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        handleChatSubmit();
+      }
     });
-
-    document.getElementById('close-chat').addEventListener('click', () => {
-      document.getElementById('chat-modal').classList.remove('active');
+    promptChips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        const text = chip.dataset.prompt;
+        if (!text || !chatInput) return;
+        chatInput.value = text;
+        handleChatSubmit();
+      });
     });
 
     // Inicialização
