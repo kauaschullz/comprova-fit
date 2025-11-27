@@ -1100,6 +1100,25 @@
         </div>
       </div>
     </section>
+
+    <!-- Chatbot -->
+    <section id="chat" class="section">
+      <div class="chat-hero">
+        <div class="section-title-row" style="align-items:flex-start;">
+          <div>
+            <h2 style="margin-bottom:6px;">Chatbot ComprovaFIT</h2>
+            <p class="subtitle" style="margin-bottom:0;">Visual de conversa inspirado no ChatGPT para dúvidas sobre suplementos.</p>
+          </div>
+        </div>
+      </div>
+      <div class="card chat-wrapper">
+        <div class="chat-feed" id="chat-feed"></div>
+        <div class="chat-input-row">
+          <input id="chat-input" type="text" placeholder="Modo demonstração — converse em breve" autocomplete="off" disabled />
+          <button class="chat-send" id="chat-send" aria-label="Enviar" disabled>➤</button>
+        </div>
+      </div>
+    </section>
   </div>
 
   <!-- Barra de navegação -->
@@ -1127,25 +1146,6 @@
       </button>
     </div>
   </div>
-
-  <!-- Chatbot -->
-  <section id="chat" class="section">
-    <div class="chat-hero">
-      <div class="section-title-row" style="align-items:flex-start;">
-        <div>
-          <h2 style="margin-bottom:6px;">Chatbot ComprovaFIT</h2>
-          <p class="subtitle" style="margin-bottom:0;">Visual de conversa inspirado no ChatGPT para dúvidas sobre suplementos.</p>
-        </div>
-      </div>
-    </div>
-    <div class="card chat-wrapper">
-      <div class="chat-feed" id="chat-feed"></div>
-      <div class="chat-input-row">
-        <input id="chat-input" type="text" placeholder="Modo demonstração — converse em breve" autocomplete="off" disabled />
-        <button class="chat-send" id="chat-send" aria-label="Enviar" disabled>➤</button>
-      </div>
-    </div>
-  </section>
 
   <script>
     const sections = document.querySelectorAll('.section');
