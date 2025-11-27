@@ -1134,22 +1134,15 @@
       <div class="section-title-row" style="align-items:flex-start;">
         <div>
           <h2 style="margin-bottom:6px;">Chatbot ComprovaFIT</h2>
-          <p class="subtitle" style="margin-bottom:8px;">Tire dúvidas sobre suplementos, evidências e referências científicas.</p>
-          <div class="chat-prompts">
-            <span class="prompt-chip" data-prompt="Quais suplementos você recomenda para ganho de massa?">Recomendar para massa</span>
-            <span class="prompt-chip" data-prompt="Me fale das evidências da creatina">Evidência da creatina</span>
-            <span class="prompt-chip" data-prompt="Quais estudos existem sobre cafeína para desempenho?">Estudos sobre cafeína</span>
-          </div>
+          <p class="subtitle" style="margin-bottom:0;">Visual de conversa inspirado no ChatGPT para dúvidas sobre suplementos.</p>
         </div>
       </div>
     </div>
     <div class="card chat-wrapper">
-      <div class="chat-feed" id="chat-feed">
-        <div class="chat-empty" id="chat-empty">Pronto para ajudar! Faça uma pergunta ou toque em um atalho.</div>
-      </div>
+      <div class="chat-feed" id="chat-feed"></div>
       <div class="chat-input-row">
-        <input id="chat-input" type="text" placeholder="Pergunte algo..." autocomplete="off" />
-        <button class="chat-send" id="chat-send" aria-label="Enviar">➤</button>
+        <input id="chat-input" type="text" placeholder="Modo demonstração — converse em breve" autocomplete="off" disabled />
+        <button class="chat-send" id="chat-send" aria-label="Enviar" disabled>➤</button>
       </div>
     </div>
   </section>
@@ -1170,10 +1163,6 @@
     const captureBtn = document.getElementById('btn-capture');
     const captureGallery = document.getElementById('capture-gallery');
     const chatFeed = document.getElementById('chat-feed');
-    const chatInput = document.getElementById('chat-input');
-    const chatSend = document.getElementById('chat-send');
-    const chatEmpty = document.getElementById('chat-empty');
-    const promptChips = document.querySelectorAll('.prompt-chip');
 
     const personaOptions = {
       objetivo: ['Ganho de massa', 'Emagrecimento', 'Desempenho', 'Saúde geral', 'Energia extra', 'Recuperação'],
@@ -1425,7 +1414,6 @@
     let cameraStream = null;
     let currentFacing = 'environment';
     const capturedPhotos = [];
-    const chatHistory = [];
     const STATE_KEY = 'comprovafit-state-v2';
 
     // ---------- Estado persistente ----------
@@ -1507,44 +1495,12 @@
       return 'reliability-low';
     }
 
-    function appendChatMessage(role, text) {
+    function renderStaticChat() {
       if (!chatFeed) return;
-      chatEmpty?.remove();
-      const bubble = document.createElement('div');
-      bubble.className = `chat-bubble ${role}`;
-      bubble.textContent = text;
-      chatFeed.appendChild(bubble);
-      chatFeed.scrollTop = chatFeed.scrollHeight;
-      chatHistory.push({ role, text });
-    }
-
-    function buildSupplementSnippet(supp) {
-      const refs = supp.refs?.slice(0, 2).map(ref => `${ref.label}: ${ref.url}`).join('\n• ');
-      return `• ${supp.name} (evidência ${reliabilityBadge(supp.reliability)}): ${supp.short}\n  Quando usar: ${supp.when}\n  Cuidados: ${supp.care}${refs ? `\n  Estudos: ${refs}` : ''}`;
-    }
-
-    function craftChatResponse(question) {
-      const term = question.toLowerCase();
-      const matches = supplements.filter(s =>
-        s.name.toLowerCase().includes(term) ||
-        s.short.toLowerCase().includes(term) ||
-        s.what.toLowerCase().includes(term) ||
-        s.tags.some(t => t.toLowerCase().includes(term))
-      );
-
-      if (matches.length) {
-        const highlighted = matches.slice(0, 3).map(buildSupplementSnippet).join('\n\n');
-        return `Aqui está o que encontrei:\n${highlighted}`;
-      }
-
-      if (term.includes('recomenda') || term.includes('objetivo') || term.includes('melhor')) {
-        const scored = [...supplements].sort((a, b) => computeScore(b) - computeScore(a)).slice(0, 3);
-        const tips = scored.map(buildSupplementSnippet).join('\n\n');
-        const focus = userProfile.objetivo ? ` para ${userProfile.objetivo}` : '';
-        return `Priorizei pelo seu perfil${focus || ''}:\n${tips}`;
-      }
-
-      return 'Posso ajudar com evidências, indicações e cuidados sobre creatina, cafeína, ômega-3, beta-alanina e outros suplementos. Pergunte pelo nome ou peça recomendações para seu objetivo.';
+      chatFeed.innerHTML = `
+        <div class="chat-bubble user">Quais suplementos têm mais evidência para força?</div>
+        <div class="chat-bubble bot">Recomendo começar por creatina (evidência alta) e whey protein para suporte de proteína diária. Ambos têm bons estudos controlados e são seguros para a maioria das pessoas saudáveis.</div>
+      `;
     }
 
     // Calcula priorização de suplementos considerando objetivo, treino e restrições
@@ -1949,18 +1905,6 @@
       renderList();
     }
 
-    function handleChatSubmit() {
-      if (!chatInput) return;
-      const prompt = chatInput.value.trim();
-      if (!prompt) return;
-      appendChatMessage('user', prompt);
-      chatInput.value = '';
-      setTimeout(() => {
-        const reply = craftChatResponse(prompt);
-        appendChatMessage('bot', reply);
-      }, 200);
-    }
-
     document.getElementById('search').addEventListener('input', () => {
       renderList();
     });
@@ -2008,21 +1952,8 @@
       opt.addEventListener('click', () => alert('Recurso em desenvolvimento.'));
     });
 
-    chatSend?.addEventListener('click', handleChatSubmit);
-    chatInput?.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        handleChatSubmit();
-      }
-    });
-    promptChips.forEach(chip => {
-      chip.addEventListener('click', () => {
-        const text = chip.dataset.prompt;
-        if (!text || !chatInput) return;
-        chatInput.value = text;
-        handleChatSubmit();
-      });
-    });
+    // Chat em modo demonstração
+    renderStaticChat();
 
     // Inicialização
     loadState();
