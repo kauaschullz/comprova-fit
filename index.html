@@ -22,7 +22,7 @@
 
     body {
       font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-      background: linear-gradient(180deg, #f8fff8 0%, #eef7ef 50%, #ffffff 100%);
+      background: linear-gradient(180deg, #f8fff8 0%, #eef7ef 40%, #ffffff 100%);
       color: var(--dark);
       display: flex;
       justify-content: center;
@@ -127,7 +127,7 @@
     }
 
     h2 {
-      font-size: 22px;
+      font-size: 24px;
       margin-bottom: 12px;
     }
 
@@ -139,9 +139,9 @@
 
     .section {
       display: none;
-      padding: 10px 18px 90px;
+      padding: 14px 18px 110px;
       min-height: 100vh;
-      background: white;
+      background: var(--light-gray);
     }
 
     .section.active {
@@ -164,22 +164,37 @@
     }
 
     .choice-item {
-      display: grid;
-      grid-template-columns: auto 1fr;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 12px;
+      position: relative;
+      padding: 12px;
       border-radius: 14px;
       border: 1px solid rgba(0, 0, 0, 0.1);
       background: linear-gradient(135deg, #f9fff9 0%, #ffffff 100%);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+      cursor: pointer;
+      transition: border 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 10px;
+      align-items: center;
     }
 
     .choice-item input {
-      width: 16px;
-      height: 16px;
-      accent-color: var(--green);
-      cursor: pointer;
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .choice-check {
+      width: 18px;
+      height: 18px;
+      border-radius: 6px;
+      border: 2px solid rgba(0, 0, 0, 0.15);
+      display: grid;
+      place-items: center;
+      font-size: 12px;
+      color: transparent;
+      transition: all 0.15s ease;
+      background: white;
     }
 
     .choice-label {
@@ -187,6 +202,20 @@
       color: var(--dark);
       line-height: 1.3;
       font-size: 14px;
+    }
+
+    .choice-item.selected {
+      border-color: var(--green);
+      box-shadow: 0 8px 18px rgba(0, 176, 80, 0.2);
+      background: linear-gradient(135deg, #f3fff5 0%, #ffffff 100%);
+      transform: translateY(-1px);
+    }
+
+    .choice-item.selected .choice-check {
+      border-color: var(--green);
+      color: var(--green);
+      background: rgba(0, 176, 80, 0.08);
+      content: '✓';
     }
 
     .mini-cards {
@@ -207,6 +236,29 @@
 
     .mini-card strong {
       font-size: 15px;
+    }
+
+    .progress-dots {
+      display: flex;
+      gap: 8px;
+      margin: 10px 0 16px;
+      align-items: center;
+    }
+
+    .progress-dots .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #dcdcdc;
+    }
+
+    .progress-dots .dot.done {
+      background: var(--green);
+    }
+
+    .progress-dots .dot.active {
+      background: linear-gradient(135deg, var(--green), #1ed883);
+      box-shadow: 0 0 0 6px rgba(0, 176, 80, 0.15);
     }
 
     .divider {
@@ -268,7 +320,7 @@
     }
 
     .card {
-      background: #fdfdfd;
+      background: #fff;
       border: 1px solid rgba(0, 0, 0, 0.06);
       border-radius: 18px;
       padding: 14px;
@@ -298,8 +350,8 @@
       display: flex;
       gap: 10px;
       align-items: center;
-      margin-bottom: 14px;
-      padding: 6px 8px;
+      margin-bottom: 10px;
+      padding: 8px 10px;
       background: #fdfdfd;
       border: 1px solid rgba(0, 0, 0, 0.08);
       border-radius: 18px;
@@ -366,12 +418,22 @@
     }
 
     .badge {
-      padding: 6px 8px;
-      border-radius: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
       font-size: 12px;
       text-align: center;
-      border: 1px solid var(--border);
+      border: 1px solid rgba(0, 0, 0, 0.08);
       background: #f7fff9;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 700;
+    }
+
+    .badge::before {
+      content: '•';
+      font-size: 16px;
+      line-height: 1;
     }
 
     .reliability-high { color: #0a8f2f; }
@@ -463,6 +525,15 @@
       border-radius: 14px;
     }
 
+    .empty-state {
+      text-align: center;
+      color: var(--gray);
+      border: 1px dashed rgba(0, 0, 0, 0.1);
+      padding: 16px;
+      border-radius: 14px;
+      background: #fff;
+    }
+
     .profile-header {
       display: flex;
       align-items: center;
@@ -545,11 +616,23 @@
       border-radius: 12px;
       font-size: 13px;
       cursor: pointer;
-      transition: background 0.2s;
+      position: relative;
+      transition: background 0.2s, transform 0.15s;
     }
 
     .nav-btn.active {
       background: rgba(255, 255, 255, 0.14);
+      transform: translateY(-1px);
+    }
+
+    .nav-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: 4px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
     }
 
     .nav-icon {
@@ -608,7 +691,16 @@
       border-radius: 16px;
       border: 1px solid rgba(0, 0, 0, 0.1);
       background: #0f0f0f;
-      min-height: 220px;
+      min-height: 240px;
+    }
+
+    .camera-overlay {
+      position: absolute;
+      inset: 12px;
+      border: 2px dashed rgba(255, 255, 255, 0.5);
+      border-radius: 18px;
+      pointer-events: none;
+      box-shadow: 0 0 0 999px rgba(0, 0, 0, 0.25) inset;
     }
 
     .camera-stage video,
@@ -622,6 +714,11 @@
     .camera-stage canvas {
       display: none;
       background: #000;
+    }
+
+    .capture-feedback {
+      color: #0a8f2f;
+      font-weight: 700;
     }
 
     .camera-status {
@@ -679,6 +776,7 @@
         </div>
         <div class="login-actions">
           <button id="btn-login">Entrar</button>
+          <button class="btn-secondary" id="btn-guest">Explorar sem criar conta</button>
         </div>
       </div>
     </section>
@@ -711,6 +809,11 @@
         <h2>Nos conte mais sobre você</h2>
         <p class="subtitle">Personalize suas recomendações com base no seu perfil.</p>
       </header>
+      <div class="progress-dots" aria-label="Etapa 3 de 3">
+        <span class="dot done"></span>
+        <span class="dot done"></span>
+        <span class="dot active"></span>
+      </div>
       <div class="card">
         <div class="input-group">
           <input id="idade" type="number" placeholder="Idade" />
@@ -733,7 +836,7 @@
       <div class="topbar">
         <div>
           <h2>Busca</h2>
-          <p class="subtitle">Filtre pelos suplementos recomendados para você.</p>
+          <p class="subtitle">Encontre suplementos com base na ciência.</p>
         </div>
         <button class="pill-btn" id="btn-premium">Seja Premium</button>
       </div>
@@ -746,6 +849,10 @@
           <option value="recommended">Recomendados</option>
           <option value="popular">Populares</option>
         </select>
+        <label style="display:flex;align-items:center;gap:8px;margin-top:8px;font-size:14px;">
+          <input type="checkbox" id="filter-high" style="width:16px;height:16px;accent-color:var(--green);" />
+          Mostrar apenas evidência alta
+        </label>
       </div>
       <div class="card" style="margin-bottom:12px;" id="personal-card">
         <div class="section-title-row" style="margin-bottom:6px;">
@@ -763,6 +870,7 @@
     <!-- Detalhes -->
     <section id="details" class="section">
       <div class="detail-hero">
+        <button class="pill-btn" id="btn-back-home" style="margin-bottom:10px;padding:8px 12px;">← Voltar</button>
         <img id="detail-image" alt="Imagem do suplemento" />
         <div class="title-row">
           <h2 id="detail-name"></h2>
@@ -836,6 +944,7 @@
         <div class="camera-stage">
           <video id="camera-video" playsinline muted></video>
           <canvas id="camera-canvas"></canvas>
+          <div class="camera-overlay"></div>
         </div>
         <div class="camera-status" id="camera-status">🎯 Toque em "Ativar câmera" para tentar abrir o dispositivo.</div>
         <div class="camera-actions">
@@ -1146,6 +1255,36 @@
     let currentSupplement = null;
     let lastSearchTerm = '';
     let cameraStream = null;
+    const STATE_KEY = 'comprovafit-state-v2';
+
+    // ---------- Estado persistente ----------
+    function saveState() {
+      try {
+        const payload = {
+          userProfile,
+          historySupplements,
+          historySearches,
+          navReady
+        };
+        localStorage.setItem(STATE_KEY, JSON.stringify(payload));
+      } catch (err) {
+        console.warn('Não foi possível salvar o estado', err);
+      }
+    }
+
+    function loadState() {
+      try {
+        const data = localStorage.getItem(STATE_KEY);
+        if (!data) return;
+        const parsed = JSON.parse(data);
+        userProfile = { ...userProfile, ...(parsed.userProfile || {}) };
+        historySupplements = parsed.historySupplements || [];
+        historySearches = parsed.historySearches || [];
+        navReady = !!parsed.navReady;
+      } catch (err) {
+        console.warn('Não foi possível carregar o estado', err);
+      }
+    }
 
     function showSection(id) {
       sections.forEach(sec => {
@@ -1165,6 +1304,17 @@
       }
     }
 
+    function hydrateProfileInputs() {
+      document.getElementById('login-email').value = userProfile.email || '';
+      document.getElementById('idade').value = userProfile.idade || '';
+      document.getElementById('peso').value = userProfile.peso || '';
+      document.getElementById('atividade').value = userProfile.atividade || 'Moderado';
+      document.getElementById('exercicio').value = userProfile.exercicio || '';
+      document.getElementById('objetivo').value = userProfile.objetivo || '';
+      document.getElementById('profile-email').textContent = userProfile.email || 'usuario@email.com';
+      document.getElementById('profile-name').textContent = userProfile.exercicio || 'João Pedro';
+    }
+
     function updateNavVisibility(currentId) {
       const showNav = navReady && !['login', 'persona', 'quiz'].includes(currentId);
       navbar.classList.toggle('show', showNav);
@@ -1172,9 +1322,9 @@
     }
 
     function reliabilityBadge(level) {
-      if (level === 'alta') return '👍 Alta';
-      if (level === 'media') return '🟡 Moderada';
-      return '⚠️ Baixa';
+      if (level === 'alta') return 'Alta';
+      if (level === 'media') return 'Moderada';
+      return 'Baixa';
     }
 
     function reliabilityClass(level) {
@@ -1183,6 +1333,7 @@
       return 'reliability-low';
     }
 
+    // Calcula priorização de suplementos considerando objetivo, treino e restrições
     function computeScore(supp) {
       let score = 0;
       const objetivo = (userProfile.objetivo || '').toLowerCase();
@@ -1221,15 +1372,21 @@
 
     function renderList() {
       const listEl = document.getElementById('supplement-list');
-      const term = document.getElementById('search').value.toLowerCase();
+      const term = document.getElementById('search').value.toLowerCase().trim();
       const mode = document.getElementById('view-mode').value;
+      const highOnly = document.getElementById('filter-high').checked;
       const personalCard = document.getElementById('personal-card');
 
       if (personalCard) {
         personalCard.style.display = term ? 'none' : 'block';
       }
 
-      let filtered = supplements.filter(s => s.name.toLowerCase().includes(term));
+      let filtered = supplements.filter(s => {
+        const haystack = `${s.name} ${s.short} ${s.what} ${s.tags.join(' ')}`.toLowerCase();
+        const matchesTerm = term ? haystack.includes(term) : true;
+        const matchesReliability = highOnly ? s.reliability === 'alta' : true;
+        return matchesTerm && matchesReliability;
+      });
 
       filtered = filtered.sort((a, b) => computeScore(b) - computeScore(a));
 
@@ -1237,6 +1394,11 @@
         filtered = filtered.filter(s => s.category === 'popular').concat(
           filtered.filter(s => s.category !== 'popular')
         );
+      }
+
+      if (!filtered.length) {
+        listEl.innerHTML = '<div class="empty-state">Nenhum suplemento encontrado para essa busca.</div>';
+        return;
       }
 
       listEl.innerHTML = filtered.map(supp => `
@@ -1296,30 +1458,59 @@
         const groupName = multiple ? `${type}-group` : 'objetivo-group';
 
         personaOptions[type].forEach(opt => {
-          const row = document.createElement('label');
+          const row = document.createElement('div');
           row.className = 'choice-item';
 
           const input = document.createElement('input');
           input.type = multiple ? 'checkbox' : 'radio';
           input.name = groupName;
+          input.value = opt;
           input.checked = multiple ? userProfile[type].includes(opt) : userProfile[type] === opt;
-          input.addEventListener('change', () => {
-            if (multiple) {
-              const arr = new Set(userProfile[type]);
-              input.checked ? arr.add(opt) : arr.delete(opt);
-              userProfile[type] = [...arr];
-            } else {
-              userProfile[type] = opt;
-              document.getElementById('objetivo').value = opt;
-            }
-            updatePersonaSuggestions();
-          });
+
+          const check = document.createElement('span');
+          check.className = 'choice-check';
+          check.textContent = '✓';
 
           const label = document.createElement('span');
           label.className = 'choice-label';
           label.textContent = opt;
 
+          const syncSelection = (isSelected) => {
+            row.classList.toggle('selected', isSelected);
+            check.style.color = isSelected ? 'var(--green)' : 'transparent';
+          };
+
+          syncSelection(input.checked);
+
+          const handleSelect = () => {
+            if (multiple) {
+              const set = new Set(userProfile[type]);
+              if (set.has(opt)) {
+                set.delete(opt);
+                input.checked = false;
+              } else {
+                set.add(opt);
+                input.checked = true;
+              }
+              userProfile[type] = [...set];
+            } else {
+              userProfile[type] = opt;
+              document.getElementById('objetivo').value = opt;
+              container.querySelectorAll('.choice-item').forEach(el => {
+                el.classList.remove('selected');
+                el.querySelector('.choice-check').style.color = 'transparent';
+              });
+              input.checked = true;
+            }
+            syncSelection(input.checked);
+            updatePersonaSuggestions();
+          };
+
+          row.addEventListener('click', handleSelect);
+          input.addEventListener('change', handleSelect);
+
           row.appendChild(input);
+          row.appendChild(check);
           row.appendChild(label);
           container.appendChild(row);
         });
@@ -1332,11 +1523,13 @@
 
     function updatePersonaSuggestions() {
       updatePersonalRecos();
+      saveState();
     }
 
     function addHistorySupplement(sup) {
       historySupplements = [sup, ...historySupplements.filter(h => h.id !== sup.id)].slice(0, 15);
       updateHistoryUI();
+      saveState();
     }
 
     function addSearchTerm(term) {
@@ -1344,14 +1537,17 @@
       lastSearchTerm = term;
       historySearches = [term, ...historySearches.filter(t => t !== term)].slice(0, 15);
       updateHistoryUI();
+      saveState();
     }
 
     function setCameraStatus(message, isError = false) {
       if (!cameraStatus) return;
       cameraStatus.textContent = message;
       cameraStatus.style.color = isError ? '#c63d2f' : 'var(--gray)';
+      cameraStatus.classList.toggle('capture-feedback', !isError && message.toLowerCase().includes('capturada'));
     }
 
+    // --- Câmera: controle de lifecycle ---
     function stopCamera() {
       if (cameraStream) {
         cameraStream.getTracks().forEach(track => track.stop());
@@ -1382,7 +1578,7 @@
         cameraStream = stream;
         videoEl.srcObject = stream;
         await videoEl.play();
-        setCameraStatus('Câmera ativa. Aponte para o rótulo e toque em "Tirar foto".');
+        setCameraStatus('Câmera ativa. Centralize o rótulo na moldura e toque em "Tirar foto".');
       } catch (err) {
         const httpsHint = location.protocol !== 'https:' && location.hostname !== 'localhost'
           ? ' Este recurso precisa de HTTPS ou localhost para funcionar em navegadores modernos.'
@@ -1424,14 +1620,14 @@
       document.getElementById('detail-when').textContent = supp.when;
       document.getElementById('detail-care').textContent = supp.care;
       const refList = document.getElementById('detail-refs');
-      refList.innerHTML = supp.refs.map(ref => `<li><a href="${ref.url}" target="_blank" rel="noopener noreferrer">${ref.label}</a></li>`).join('');
+      refList.innerHTML = supp.refs.map(ref => `<li><a href="${ref.url}" target="_blank" rel="noopener noreferrer">🔗 ${ref.label}</a></li>`).join('');
       showSection('details');
     }
 
     function updateHistoryUI() {
       historySearchList.innerHTML = historySearches.length
         ? historySearches.map(term => `<div class="card">🔍 ${term}</div>`).join('')
-        : '<p class="subtitle">Nenhuma pesquisa ainda.</p>';
+        : '<div class="empty-state">Nenhuma pesquisa ainda.</div>';
 
       historySuppList.innerHTML = historySupplements.length
         ? historySupplements.map(s => `
@@ -1444,13 +1640,18 @@
             <div class="badge ${reliabilityClass(s.reliability)}">${reliabilityBadge(s.reliability)}</div>
           </div>
         `).join('')
-        : '<p class="subtitle">Nenhum suplemento visualizado.</p>';
+        : '<div class="empty-state">Nenhum suplemento visualizado.</div>';
     }
 
     document.getElementById('btn-login').addEventListener('click', () => {
       const email = document.getElementById('login-email').value.trim();
       userProfile.email = email || 'usuario@comprovafit.com';
       document.getElementById('profile-email').textContent = userProfile.email;
+      saveState();
+      showSection('persona');
+    });
+
+    document.getElementById('btn-guest').addEventListener('click', () => {
       showSection('persona');
     });
 
@@ -1471,11 +1672,16 @@
       document.getElementById('profile-name').textContent = userProfile.exercicio || 'João Pedro';
       updatePersonaSuggestions();
       renderList();
+      saveState();
       showSection('home');
     });
 
     document.getElementById('btn-ajustar-perfil').addEventListener('click', () => {
       showSection('persona');
+    });
+
+    document.getElementById('btn-back-home').addEventListener('click', () => {
+      showSection('home');
     });
 
     document.getElementById('btn-premium').addEventListener('click', () => {
@@ -1502,6 +1708,7 @@
     document.getElementById('search-btn').addEventListener('click', handleSearchSubmit);
 
     document.getElementById('view-mode').addEventListener('change', renderList);
+    document.getElementById('filter-high').addEventListener('change', renderList);
 
     startCameraBtn?.addEventListener('click', startCamera);
     captureBtn?.addEventListener('click', capturePhoto);
@@ -1538,12 +1745,19 @@
     });
 
     // Inicialização
+    loadState();
+    hydrateProfileInputs();
     renderPersonaChips();
     updatePersonaSuggestions();
-    renderList();
     updateHistoryUI();
+    renderList();
     document.getElementById('tab-supps').style.display = 'none';
-    updateNavVisibility('login');
+
+    if (navReady) {
+      showSection('home');
+    } else {
+      showSection('login');
+    }
   </script>
 </body>
 </html>
